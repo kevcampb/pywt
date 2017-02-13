@@ -9,7 +9,11 @@ from distutils.sysconfig import get_python_inc
 
 import setuptools
 from setuptools import setup, Extension
-from numpy import get_include as get_numpy_include
+try:
+    from numpy import get_include as get_numpy_include
+except ImportError:
+    def get_numpy_include():
+        return '' #raise Exception("Numpy is not installed")
 
 
 try:
@@ -17,10 +21,10 @@ try:
     USE_CYTHON = True
 except ImportError:
     USE_CYTHON = False
-    if not os.path.exists(os.path.join('pywt', '_extensions', '_pywt.c')):
-        msg = ("Cython must be installed when working with a development "
-               "version of PyWavelets")
-        raise RuntimeError(msg)
+    #if not os.path.exists(os.path.join('pywt', '_extensions', '_pywt.c')):
+    #    msg = ("Cython must be installed when working with a development "
+    #           "version of PyWavelets")
+    #    raise RuntimeError(msg)
 
 
 MAJOR = 1
@@ -256,5 +260,5 @@ if __name__ == '__main__':
         test_suite='nose.collector',
 
         # A function is imported in setup.py, so not really useful
-        install_requires=["numpy"],
+        install_requires=["numpy", "cython"],
     )
